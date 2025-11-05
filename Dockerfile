@@ -18,7 +18,8 @@ COPY . /app
 
 # Your entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Fix line endings (Windows CRLF -> Unix LF)
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 EXPOSE 8000 5432
 CMD ["/entrypoint.sh"]
