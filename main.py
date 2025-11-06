@@ -41,6 +41,7 @@ from pydantic import BaseModel  # For request/response validation
 # Database ORM imports
 from sqlalchemy import create_engine, Column, Text, DateTime, String
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.sql import func  # For timestamp default values
 
 # Environment variable management
 from dotenv import load_dotenv  # Loads API keys from .env file
@@ -123,8 +124,9 @@ class Task(Base):
     status = Column(String)
 
     # Timestamps for tracking task lifecycle
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 
     # Final result stored as JSON string (contains report and step history)
     result = Column(Text)
